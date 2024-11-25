@@ -1,14 +1,22 @@
 let gameState = {
     funds: 1000000,
+    cashReserves: 100000,
+    customerDeposits: 500000,
+    loansOutstanding: 0,
     satisfaction: 75,
     efficiency: 80,
     staff: [],
     events: [],
-    currentMonth: 1
+    currentMonth: 1,
+    fedBorrowing: 0,
+    reserveRequirementRatio: 0.1 // 10% reserve requirement
 };
 
 function updateStats() {
     document.getElementById('funds').innerText = gameState.funds.toLocaleString();
+    document.getElementById('cash-reserves').innerText = gameState.cashReserves.toLocaleString();
+    document.getElementById('customer-deposits').innerText = gameState.customerDeposits.toLocaleString();
+    document.getElementById('loans-outstanding').innerText = gameState.loansOutstanding.toLocaleString();
     document.getElementById('satisfaction').innerText = gameState.satisfaction;
     document.getElementById('efficiency').innerText = gameState.efficiency;
     document.getElementById('current-month').innerText = gameState.currentMonth;
@@ -54,22 +62,87 @@ function launchMarketingCampaign() {
     }
 }
 
+function manageCash() {
+    let amount = parseInt(prompt('Enter amount to adjust cash reserves (positive to increase, negative to decrease):'));
+    if (!isNaN(amount)) {
+        if (amount > 0 && gameState.funds >= amount) {
+            gameState.funds -= amount;
+            gameState.cashReserves += amount;
+            addEvent(`Added $${amount.toLocaleString()} to cash reserves.`);
+        } else if (amount < 0 && gameState.cashReserves >= Math.abs(amount)) {
+            gameState.funds += Math.abs(amount);
+            gameState.cashReserves -= Math.abs(amount);
+            addEvent(`Removed $${Math.abs(amount).toLocaleString()} from cash reserves.`);
+        } else {
+            addEvent('Invalid amount or insufficient funds.');
+        }
+        updateStats();
+    } else {
+        addEvent('Invalid input for cash management.');
+    }
+}
+
+function interactWithFed() {
+    let action = prompt('Choose an action:\n1. Borrow from Fed\n2. Repay Fed Loan\n3. Check Reserve Requirement');
+    if (action === '1') {
+        let amount = parseInt(prompt('Enter amount to borrow from the Fed:'));
+        if (!isNaN(amount) && amount > 0) {
+            gameState.funds += amount;
+            gameState.fedBorrowing += amount;
+            addEvent(`Borrowed $${amount.toLocaleString()} from the Fed.`);
+            updateStats();
+        } else {
+            addEvent('Invalid amount for borrowing.');
+        }
+    } else if (action === '2') {
+        let amount = parseInt(prompt(`Enter amount to repay to the Fed (You owe $${gameState.fedBorrowing.toLocaleString()}):`));
+        if (!isNaN(amount) && amount > 0 && gameState.funds >= amount && amount <= gameState.fedBorrowing) {
+            gameState.funds -= amount;
+            gameState.fedBorrowing -= amount;
+            addEvent(`Repaid $${amount.toLocaleString()} to the Fed.`);
+            updateStats();
+        } else {
+            addEvent('Invalid amount for repayment.');
+        }
+    } else if (action === '3') {
+        let requiredReserves = gameState.customerDeposits * gameState.reserveRequirementRatio;
+        addEvent(`Current reserve requirement: $${requiredReserves.toLocaleString()}.`);
+    } else {
+        addEvent('Invalid action with the Fed.');
+    }
+}
+
 function nextTurn() {
     gameState.currentMonth++;
 
     // Monthly expenses
-    let expenses = gameState.staff.length * 5000;
-    gameState.funds -= expenses;
+    let staffExpenses = gameState.staff.length * 5000;
+    gameState.funds -= staffExpenses;
+    addEvent(`Paid $${staffExpenses.toLocaleString()} in staff salaries.`);
 
-    // Monthly income based on efficiency
-    let income = gameState.efficiency * 1000;
-    gameState.funds += income;
+    // Interest on Fed borrowing
+    let fedInterestRate = 0.02; // 2% monthly interest rate
+    let fedInterest = gameState.fedBorrowing * fedInterestRate;
+    gameState.funds -= fedInterest;
+    addEvent(`Paid $${fedInterest.toLocaleString()} in interest to the Fed.`);
+
+    // Customer deposits and withdrawals
+    customerTransactions();
+
+    // Loans interest income
+    let loanInterestRate = 0.01; // 1% monthly interest income
+    let loanIncome = gameState.loansOutstanding * loanInterestRate;
+    gameState.funds += loanIncome;
+    addEvent(`Received $${loanIncome.toLocaleString()} in loan interest income.`);
 
     // Random Event Trigger
     randomEvent();
 
     // Customer Feedback
     customerFeedback();
+
+    // Check Reserve Requirement
+    checkReserveRequirement();
 
     // Cap satisfaction and efficiency between 0 and 100
     gameState.satisfaction = Math.min(100, Math.max(0, gameState.satisfaction));
@@ -119,6 +192,43 @@ function customerFeedback() {
         addEvent('Negative customer feedback received.');
     }
     updateStats();
+}
+
+// Customer Transactions
+function customerTransactions() {
+    // Simulate customer deposits and withdrawals
+    let depositChance = Math.random();
+    let transactionAmount = Math.floor(Math.random() * 100000) + 50000; // Between 50,000 and 150,000
+    if (depositChance < 0.5) {
+        // Customer Deposits
+        gameState.customerDeposits += transactionAmount;
+        gameState.cashReserves += transactionAmount;
+        addEvent(`Customers deposited $${transactionAmount.toLocaleString()}.`);
+    } else {
+        // Customer Withdrawals
+        if (gameState.cashReserves >= transactionAmount) {
+            gameState.customerDeposits -= transactionAmount;
+            gameState.cashReserves -= transactionAmount;
+            addEvent(`Customers withdrew $${transactionAmount.toLocaleString()}.`);
+        } else {
+            addEvent('Not enough cash reserves to cover customer withdrawals!');
+            // Possible penalty or negative effect
+            gameState.satisfaction -= 10;
+        }
+    }
+    updateStats();
+}
+
+// Check Reserve Requirement
+function checkReserveRequirement() {
+    let requiredReserves = gameState.customerDeposits * gameState.reserveRequirementRatio;
+    if (gameState.cashReserves < requiredReserves) {
+        addEvent('Cash reserves below required minimum! Penalty applied.');
+        // Apply a penalty for not meeting reserve requirements
+        let penalty = 50000;
+        gameState.funds -= penalty;
+        gameState.satisfaction -= 5;
+    }
 }
 
 // Data Persistence
