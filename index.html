@@ -2,44 +2,58 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Manage your own bank branch in this simulation game. Make decisions, manage funds, and grow your branch!">
     <title>Bank Branch Manager Simulator</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div id="app">
-        <header>
+    <div id="app" class="container">
+        <!-- Header Section -->
+        <header class="header">
             <h1>Bank Branch Manager Simulator</h1>
+            <p class="subtitle">Lead your branch to success through strategic decisions!</p>
         </header>
 
-        <section id="stats">
-            <p><strong>Branch Funds:</strong> $<span id="funds">1,000,000</span></p>
-            <p><strong>Cash Reserves:</strong> $<span id="cash-reserves">100,000</span></p>
-            <p><strong>Customer Deposits:</strong> $<span id="customer-deposits">500,000</span></p>
-            <p><strong>Loans Outstanding:</strong> $<span id="loans-outstanding">0</span></p>
-            <p><strong>Customer Satisfaction:</strong> <span id="satisfaction">75</span>%</p>
-            <p><strong>Staff Efficiency:</strong> <span id="efficiency">80</span>%</p>
-            <p><strong>Current Month:</strong> <span id="current-month">1</span></p>
+        <!-- Stats Section -->
+        <section id="stats" class="stats-section">
+            <h2 aria-label="Branch Stats">Branch Stats</h2>
+            <div class="stat-item"><strong>Branch Funds:</strong> $<span id="funds">1,000,000</span></div>
+            <div class="stat-item"><strong>Cash Reserves:</strong> $<span id="cash-reserves">100,000</span></div>
+            <div class="stat-item"><strong>Customer Deposits:</strong> $<span id="customer-deposits">500,000</span></div>
+            <div class="stat-item"><strong>Loans Outstanding:</strong> $<span id="loans-outstanding">0</span></div>
+            <div class="stat-item"><strong>Customer Satisfaction:</strong> <span id="satisfaction">75</span>%</div>
+            <div class="stat-item"><strong>Staff Efficiency:</strong> <span id="efficiency">80</span>%</div>
+            <div class="stat-item"><strong>Current Month:</strong> <span id="current-month">1</span></div>
         </section>
 
-        <section id="actions">
-            <button onclick="openHiringMenu()">Hire Staff</button>
-            <button onclick="upgradeFacilities()">Upgrade Facilities</button>
-            <button onclick="launchMarketingCampaign()">Launch Marketing Campaign</button>
-            <button onclick="manageCash()">Manage Cash</button>
-            <button onclick="interactWithFed()">Interact with Fed</button>
-            <button onclick="nextTurn()">Next Month</button>
-            <button onclick="saveGame()">Save Game</button>
-            <button onclick="loadGame()">Load Game</button>
+        <!-- Actions Section -->
+        <section id="actions" class="actions-section">
+            <h2 aria-label="Actions">Actions</h2>
+            <div class="actions-grid">
+                <button onclick="openHiringMenu()" class="action-btn" title="Hire new staff to improve efficiency.">Hire Staff</button>
+                <button onclick="upgradeFacilities()" class="action-btn" title="Upgrade branch facilities to boost customer satisfaction.">Upgrade Facilities</button>
+                <button onclick="launchMarketingCampaign()" class="action-btn" title="Run a marketing campaign to attract more customers.">Launch Marketing Campaign</button>
+                <button onclick="manageCash()" class="action-btn" title="Adjust your branch's cash reserves.">Manage Cash</button>
+                <button onclick="interactWithFed()" class="action-btn" title="Borrow from or repay the Federal Reserve.">Interact with Fed</button>
+                <button onclick="nextTurn()" class="action-btn" title="Move to the next month and see the branch's performance.">Next Month</button>
+                <button onclick="saveGame()" class="action-btn" title="Save your progress.">Save Game</button>
+                <button onclick="loadGame()" class="action-btn" title="Load a previously saved game.">Load Game</button>
+            </div>
         </section>
 
-        <section id="events">
-            <h2>Events</h2>
-            <ul id="event-list">
+        <!-- Events Section -->
+        <section id="events" class="events-section">
+            <h2 aria-label="Event Log">Event Log</h2>
+            <p class="events-description">Track important events happening in your branch:</p>
+            <ul id="event-list" class="event-list">
                 <!-- Dynamic events will appear here -->
+                <li class="event-placeholder">No events yet. Take actions to start managing your branch!</li>
             </ul>
         </section>
     </div>
 
+    <!-- JavaScript -->
     <script src="script.js"></script>
 </body>
 </html>
