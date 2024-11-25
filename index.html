@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Bank Branch Manager Simulator</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="app">
+        <header>
+            <h1>Bank Branch Manager Simulator</h1>
+        </header>
+
+        <section id="stats">
+            <p><strong>Branch Funds:</strong> $<span id="funds">1,000,000</span></p>
+            <p><strong>Customer Satisfaction:</strong> <span id="satisfaction">75</span>%</p>
+            <p><strong>Staff Efficiency:</strong> <span id="efficiency">80</span>%</p>
+            <p><strong>Current Month:</strong> <span id="current-month">1</span></p>
+        </section>
+
+        <section id="actions">
+            <button onclick="openHiringMenu()">Hire Staff</button>
+            <button onclick="upgradeFacilities()">Upgrade Facilities</button>
+            <button onclick="launchMarketingCampaign()">Launch Marketing Campaign</button>
+            <button onclick="nextTurn()">Next Month</button>
+            <button onclick="saveGame()">Save Game</button>
+            <button onclick="loadGame()">Load Game</button>
+        </section>
+
+        <section id="events">
+            <h2>Events</h2>
+            <ul id="event-list">
+                <!-- Dynamic events will appear here -->
+            </ul>
+        </section>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
